@@ -20,19 +20,19 @@ import java.util.Date;
 import java.util.*;
 import java.beans.*;
 
-public class vrijr extends vri
+public class vriSource extends vri
 {
 
-	 vrijr() {
+	 vriSource() {
 		  super();
 	 }
 
 	 public static void main(String args[]) {
 		  System.out.println("Standalone java program");
-		  System.out.println("VRI Junior Edition");
+		  System.out.println("VRI Source Edition");
 
-		  JFrame f = new JFrame("VRIjr");
-		  vrijr vriTest = new vrijr();
+		  JFrame f = new JFrame("VRI Source");
+		  vriSource vriTest = new vriSource();
 		  vriTest.init();
 		  f.add("Center", vriTest);
 		  f.setSize(900, 800);
@@ -47,57 +47,35 @@ public class vrijr extends vri
 		  GridBagConstraints gbc = new GridBagConstraints();
 		  allImgPanel.setLayout(gbl);
 
-		  gbc.gridx = 0;
-		  gbc.gridy = 0;
-		  gbc.gridwidth = 3;
-		  allImgPanel.add(new JLabel("Array"));
-		  
-		  arrDisp = new ArrayDisplays.vriFlatLatLonArrDisp(obs);
-		  // FIXME:
-		  // ArrayList<Component>
-		  arrDisp.setGeometry(geom.geomap.get("IYA"));
-		  gbc.gridx = 0;
-		  gbc.gridy = 1;
-		  allImgPanel.add(arrDisp, gbc);
+		  gbc.gridwidth = 1;
 
 		  gbc.gridx = 0;
-		  gbc.gridy = 2;
-		  gbc.gridwidth = 1;
+		  gbc.gridy = 0;
 		  allImgPanel.add(new JLabel("Source Image"), gbc);
 
 		  imgDisp = new vriImgDisp(this);
 		  gbc.gridx = 0;
-		  gbc.gridy = 3;
+		  gbc.gridy = 1;
 		  allImgPanel.add(imgDisp, gbc);
-		  System.err.print("imgDisp created\n");
-		  
+
+		  gbc.gridx = 0;
+		  gbc.gridy = 2;
+		  allImgPanel.add(new JLabel("UV image"), gbc);
+
 		  UVpDisp = new vriUVpDisp(this);
-
-		  gbc.gridx = 1;
-		  gbc.gridy = 2;
-		  allImgPanel.add(new JLabel("Array UV Coverage"), gbc);
-
-		  UVcDisp = new vriUVcDisp(obs, aux);
-		  UVcDisp.setPlotScale(Scale.EARTH);
-		  gbc.gridx = 1;
-		  gbc.gridy = 3;
-		  allImgPanel.add(UVcDisp, gbc);
-		  
-		  
-		  UVcCtrl=new vriUVcZoomChooser("?", UVcDisp);
-
-		  // Third column
-		  gbc.gridx = 2;
-		  gbc.gridy = 2;
-		  allImgPanel.add(new JLabel("Reconstructed Image"), gbc); 
-
-		  gbc.gridx = 2;
-		  gbc.gridy = 3;
-		  allImgPanel.add(imgDisp2 = new vriImgDisp(this), gbc);
-
-		  UVpConvDisp = new vriUVpDisp(this);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        allImgPanel.add(UVpDisp, gbc);
 
 		  // End of gridbagging
+
+        // things that we don't use but have to have
+        // because WidgetManager connects them to each other.
+		  arrDisp = new ArrayDisplays.vriFlatLatLonArrDisp(obs);
+		  arrDisp.setGeometry(geom.geomap.get("IYA"));
+		  imgDisp2 = new vriImgDisp(this);
+		  UVpConvDisp = new vriUVpDisp(this);
+		  UVcDisp = new vriUVcDisp(obs, aux);
 
 		  add(allImgPanel);
 
@@ -113,15 +91,10 @@ public class vrijr extends vri
 
  	 void makeListeners() {
 		  imgDisp.addPropertyChangeListener(UVpDisp); // -> dat
-		  imgDisp.addPropertyChangeListener(UVcDisp); // -> fftsize
-		  arrDisp.addPropertyChangeListener(UVcDisp); // -> active antenna
-		  UVpDisp.addPropertyChangeListener(UVpConvDisp); // -> FFT
-		  UVcDisp.addPropertyChangeListener(UVpConvDisp); // -> uvcov
-		  UVpConvDisp.addPropertyChangeListener(imgDisp2); // -> fftconv
 	 }
 
 	 public void init() {
-		  System.out.println("VRIjr, Virtual Radio Interferometer");
+		  System.out.println("VRI Source, Virtual Radio Interferometer");
 		  setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		  setBackground(Color.lightGray);
 		  obsman = new vriObservatoryManager();
@@ -156,12 +129,11 @@ public class vrijr extends vri
 
 	 void setArrDisp(vriObservatory<?> o) {
 		  try {
-                      System.err.println("Vrijr: Changing observatory");
-                      UVcDisp.setObservatory(o);
-                      arrDisp.setObservatory(o);
-                      arrDisp.repaint();
+            System.err.println("Vrijr: Changing observatory");
+            arrDisp.setObservatory(o);
+            arrDisp.repaint();
 		  } catch (java.lang.ClassCastException e) {
-                      System.err.println("Tried to set a small obs in vrijr.");
+            System.err.println("Tried to set a small obs in vrijr.");
 		  }
 	 }
 }

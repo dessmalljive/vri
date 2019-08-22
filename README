@@ -1,0 +1,6 @@
+This is tempermental and currently a bit broken. Running at the top
+level with a classpath as given below does actually start the program, but then 
+everything still goes wrong.
+
+java -classpath ./bin:./resources:/jop88_1/small/JavaBin/:/jop88_1/small/JTransforms/bin/ \
+nl.jive.vri.vri

@@ -10,8 +10,7 @@
 package nl.jive.vri;
 
 
-class vriLocation 
-	 implements isVisible
+class vriLocation implements isVisible
 {
 	 public double NS;    // Plane coordinates wrt the Observatory longitude,
 	 public double EW;    // latitude and altitude (metres). NS = North-South,
@@ -33,7 +32,6 @@ class vriLocation
 		  return new vriLocation(1000*aNS, 1000*aEW, 1000*aUD);
 	 }
 
-
 	 public void moveTo(vriLocation l) {
 		  this.NS = l.NS;
 		  this.EW = l.EW;
@@ -46,7 +44,7 @@ class vriLocation
 
 	 static double dist2(vriLocation l1, vriLocation l2) {
 		  double dist = (Math.pow((l1.NS - l2.NS), 2.0) + 
-					 Math.pow((l1.EW - l2.EW), 2.0));
+                       Math.pow((l1.EW - l2.EW), 2.0));
 		  return dist;
 	 }
 

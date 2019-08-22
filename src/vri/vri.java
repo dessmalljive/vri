@@ -47,20 +47,20 @@ public class vri extends JApplet
 {
 
 	 Geometry geom;
-	 public vriArrDisp arrDisp;
+	 public ArrayDisplays.vriArrDisp arrDisp;
 	 PropertyChangeListener arrDispListener;
 	 public vriImgDisp imgDisp;
 	 public vriImgDisp imgDisp2;
 	 public vriUVcDisp UVcDisp;
 	 public vriUVpDisp UVpDisp;
 	 public vriUVpDisp UVpConvDisp;
-	 public vriImgEdit imgEdit;
-	 public vriAuxEdit auxEdit;
-	 public vriObsEdit obsEdit;
-	 public vriObservatory obs;
+	 public WidgetEditors.vriImgEdit imgEdit;
+	 public WidgetEditors.vriAuxEdit auxEdit;
+	 public WidgetEditors.vriObsEdit obsEdit;
+	 public vriObservatory<?> obs;
 	 public vriObservatoryManager obsman;
 	 public vriAuxiliary aux;
-	 public vriDisplayCtrl arrCtrl;
+	 public DisplayControls.vriDisplayCtrl arrCtrl;
 	 public vriUVcZoomChooser UVcCtrl;
 	 Container box;
 
@@ -83,7 +83,7 @@ public class vri extends JApplet
 	 }
 
 
-	 void setArrDisp(vriObservatory obs) {
+	 void setArrDisp(vriObservatory<?> obs) {
 		  allImgPanel.remove(arrDisp);
 		  allImgPanel.remove(arrCtrl);
 		  arrDisp.removePropertyChangeListener(UVcDisp);
@@ -113,7 +113,6 @@ public class vri extends JApplet
 		  allImgPanel.repaint();
 	 }
 
-
 	 JPanel captionDisp(String s, vriDisplay d) 
 	 {
 		  JPanel top = new JPanel();
@@ -125,36 +124,35 @@ public class vri extends JApplet
 		  return top;
 	 }  
 
-
 	 void makeImagePane() {
 		  allImgPanel = new JPanel();
 		  GridBagLayout gbl = new GridBagLayout();
 		  GridBagConstraints gbc = new GridBagConstraints();
 		  allImgPanel.setLayout(gbl);
 
-                  gbc.gridwidth = 3;
+        //gbc.gridwidth = 5;
+
 		  // First Column
-		  gbc.gridx = 0;
-		  gbc.gridy = 0;
+		  gbc.gridx = 0; gbc.gridy = 0;
 		  allImgPanel.add(new JLabel("Source Image"), gbc);
 
 		  imgDisp = new vriImgDisp(this);
-		  gbc.gridx = 0;
-		  gbc.gridy = 1;
+		  gbc.gridx = 0; gbc.gridy = 1;
 		  allImgPanel.add(imgDisp, gbc);
+		  // allImgPanel.add(new JLabel("<imgDisp>"), gbc);
 		  
-		  gbc.gridx = 0;
-		  gbc.gridy = 3;
+		  gbc.gridx = 0; gbc.gridy = 3;
 		  allImgPanel.add(new JLabel("UV source"), gbc);
 
-		  gbc.gridx = 0;
-		  gbc.gridy = 4;
-		  allImgPanel.add(UVpDisp = new vriUVpDisp(this), gbc);
+		  gbc.gridx = 0; gbc.gridy = 4;
+        UVpDisp = new vriUVpDisp(this);
+        allImgPanel.add(UVpDisp, gbc);
+		  // allImgPanel.add(new JLabel("<UVpDisp>"), gbc);
+
 
 		  // Second column
-		  gbc.gridx = 1;
-		  gbc.gridy = 0;
-		  allImgPanel.add(new JLabel("Array"));
+		  gbc.gridx = 1; gbc.gridy = 0;
+		  allImgPanel.add(new JLabel("Array"), gbc);
 		  
 		  arrDisp = obs.getArrDisp();
 		  ArrayList<Component> g = geom.geomap.get(obs.menu_name);
@@ -163,45 +161,46 @@ public class vri extends JApplet
 		  } else {
 				arrDisp.setGeometry(g);
 		  }
-		  gbc.gridx = 1;
-		  gbc.gridy = 1;
-		  allImgPanel.add(arrDisp, gbc);
+        gbc.gridy = 1;
+        // allImgPanel.add(arrDisp, gbc);
+        allImgPanel.add(new JLabel("<arrDisp>"), gbc);
 
 		  arrCtrl = obs.getDispCtrl(arrDisp);
-		  gbc.gridx = 1;
 		  gbc.gridy = 2;
 		  allImgPanel.add(arrCtrl, gbc);
+        // allImgPanel.add(new JLabel("<arrCtrl>"), gbc);
 
-		  gbc.gridx = 1;
 		  gbc.gridy = 3;
-		  allImgPanel.add(new JLabel("Array UV Coverage"), gbc);
+        allImgPanel.add(new JLabel("Array UV Coverage"), gbc);
 
 		  UVcDisp = new vriUVcDisp(obs, aux);
-		  gbc.gridx = 1;
 		  gbc.gridy = 4;
-		  allImgPanel.add(UVcDisp, gbc);
+        allImgPanel.add(UVcDisp, gbc);
+        // allImgPanel.add(new JLabel("<UVcDisp>"), gbc);
 
-		  gbc.gridx = 1;
+
 		  gbc.gridy = 5;
-		  allImgPanel.add(UVcCtrl=new vriUVcZoomChooser("?", UVcDisp), gbc);
+        UVcCtrl=new vriUVcZoomChooser("?", UVcDisp);
+        allImgPanel.add(UVcCtrl, gbc);
+        // allImgPanel.add(new JLabel("<UVcCtrl>"), gbc);
 
 		  // Third column
-
-		  gbc.gridx = 2;
+        gbc.gridx = 2;
 		  gbc.gridy = 0;
 		  allImgPanel.add(new JLabel("Reconstructed Image"), gbc); 
 
-		  gbc.gridx = 2;
 		  gbc.gridy = 1;
-		  allImgPanel.add(imgDisp2 = new vriImgDisp(this), gbc);
+        imgDisp2 = new vriImgDisp(this);
+        allImgPanel.add(imgDisp2, gbc);
+        // allImgPanel.add(new JLabel("<imgDisp2>"), gbc);
 		  
-		  gbc.gridx = 2;
 		  gbc.gridy = 3;
 		  allImgPanel.add(new JLabel("UV Detection"), gbc);
-
-		  gbc.gridx = 2;
-		  gbc.gridy = 4;
-		  allImgPanel.add(UVpConvDisp=new vriUVpDisp(this), gbc);
+        
+        gbc.gridy = 4;
+        UVpConvDisp=new vriUVpDisp(this);
+		  allImgPanel.add(UVpConvDisp, gbc);
+		  // allImgPanel.add(new JLabel("<UVpConvDisp>"), gbc);
 		  // End of gridbagging
 		  add(allImgPanel);
 	 }
@@ -232,9 +231,9 @@ public class vri extends JApplet
 		  aux = new vriAuxiliary();
 
 
-		  obsEdit = new vriObsEdit(this); 
-		  imgEdit = new vriImgEdit(this); 
-		  auxEdit = new vriAuxEdit(this, aux, obs);
+		  obsEdit = new WidgetEditors.vriObsEdit(this); 
+		  imgEdit = new WidgetEditors.vriImgEdit(this); 
+		  auxEdit = new WidgetEditors.vriAuxEdit(this, aux, obs);
 
 		  String obsname = obsEdit.getObservatory();
 		  String imgname = imgEdit.getImage();
@@ -246,75 +245,10 @@ public class vri extends JApplet
 		  makeListeners();
 
 		  arrDisp.setObservatory(obs);
-                  auxEdit.setObservatory(obs);
+        auxEdit.setObservatory(obs);
 		  arrDisp.repaint();
 
 		  imgEdit.setImage("Medium double");
 		  setVisible(true);
 	 }
 }
-
-
-
-class vriUVcZoomChooser extends JPanel {
-	 vriUVcDisp disp;
-	 Scale current;
-
-	 void setDisplay(vriUVcDisp d) {
-		  disp = d;
-	 }
-
-	 public vriUVcZoomChooser(String s, vriUVcDisp d) {
-		  disp = d;
-		  current = Scale.SPACE;
-		  
-		  setLayout(new GridLayout(0, 1));
-		  String arrayString = "Array scale";
-		  String earthString = "Earth scale";
-		  String spaceString = "Source scale";
-
-
-		  JRadioButton arrayButton = new JRadioButton(arrayString);
-		  add(arrayButton);
-		  JRadioButton earthButton = new JRadioButton(earthString);
-		  add(earthButton);
-		  JRadioButton spaceButton = new JRadioButton(spaceString);
-		  spaceButton.setSelected(true);
-		  add(spaceButton);
-
-		  ButtonGroup group = new ButtonGroup();
-		  group.add(arrayButton);
-		  group.add(earthButton);
-		  group.add(spaceButton);
-
-		  arrayButton.addActionListener(new ActionListener() 
-				{
-					 public void actionPerformed(ActionEvent ae) {
-						  System.err.println("Array button pressed");
-						  current = Scale.ARRAY;
-						  disp.setPlotScale(current);
-						  disp.repaint();
-					 }
-				});
-		  earthButton.addActionListener(new ActionListener() 
-				{
-					 public void actionPerformed(ActionEvent ae) {
-						  System.err.println("Earth button pressed");
-						  current = Scale.EARTH;
-						  disp.setPlotScale(current);
-						  disp.repaint();
-					 }
-				});
-		  spaceButton.addActionListener(new ActionListener() 
-				{
-					 public void actionPerformed(ActionEvent ae) {
-						  System.err.println("Space button pressed");
-						  current = Scale.SPACE;
-						  disp.setPlotScale(current);
-						  disp.repaint();
-					 }
-				});
-	 }
-}
-
-

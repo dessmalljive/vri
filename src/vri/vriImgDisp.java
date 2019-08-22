@@ -37,7 +37,7 @@ class vriImgDisp extends vriGreyDisp
         }
     }
 
-    public void loadAstroImage(AstroImage ai) {
+    public void loadAstroImage(WidgetEditors.AstroImage ai) {
         PixArray pix;
         setFullScale(ai.scale);
         String str = ai.filename;
@@ -55,7 +55,7 @@ class vriImgDisp extends vriGreyDisp
             repaint();
             propChanges.firePropertyChange("dat", null, dat);
             propChanges.firePropertyChange("fftsize", 0, imsize);
-        } catch (EmptyImageException e) {
+        } catch (vriGreyDisp.EmptyImageException e) {
             System.err.println("ImgDisp: Empty image");
         }
         repaint();
@@ -74,7 +74,7 @@ class vriImgDisp extends vriGreyDisp
         FFTArray cdat = fft.invfft(); 
         SquareArray dat = cdat.extractReals();
         PixArray pix = dat.toPix();
-        pix.toImage(applet, fft.size);
+        img = pix.toImage(applet, fft.size);
         message = null;
         repaint();
     }

@@ -12,9 +12,13 @@ public class MyReader
 					 java.io.UnsupportedEncodingException,
 					 java.io.IOException
 	 {
-		  
+         
+        InputStream sm = MyReader.class.getResourceAsStream(filename);
+        if (sm == null) {
+            throw new java.io.FileNotFoundException(filename + " not found");
+        }
 		  InputStreamReader in = 
-				new InputStreamReader(MyReader.class.getResourceAsStream(filename), "UTF-8");
+				new InputStreamReader(sm, "UTF-8");
 		  StringBuffer s = new StringBuffer();
 		  int CHUNKSIZE = 4096;
 		  char buff[] = new char[CHUNKSIZE];

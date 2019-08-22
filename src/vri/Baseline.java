@@ -5,13 +5,6 @@ import nl.jive.earth.*;
 import java.beans.*;
 import java.awt.geom.*;
 
-class UV {
-	 double u, v;
-	 UV(double au, double av) {
-		  u = au;
-		  v = av;
-	 }
-}
 
 class Baseline<T extends isVisible> { // parameterize by telescope type
 	 T ant1 = null;
@@ -51,30 +44,45 @@ class Baseline<T extends isVisible> { // parameterize by telescope type
 
 		  double u = scale*(bx * sh + by * ch);
 		  double v = scale*(-bx * sd * ch + by * sd * sh + bz * cd);
-		  return new UV(u, v);
+        // System.err.println("project dec, ha:" + dec + " " + ha);
+        // System.err.println("project u, v:" + u + " " + v);
+        
+        UV uv = new UV(u, v);
+        // System.err.println("project u, v:" + uv.u + " " + uv.v);
+		  return uv;
 	 }
 
 	 ArrayList<UV> makeUVPoints(double h1, double h2, 
-                                    double dec, double scale) {
+                               double dec, double scale) {
+        Boolean hasVisible = false;
 		  ArrayList<UV> res = new ArrayList<UV>();
 		  
 		  for (double h = h1; h <= h2; h += 0.06) {
 				if (!isVisible(h, dec)) 
 					 continue;
+            hasVisible = true;
 				UV uv = project(h, dec, scale);
+            // System.err.println("makeUVPoints u, v:" + uv.u + " " + uv.v);
 				res.add(uv);
 		  }
 		  if (isVisible(h2, dec)) {
+            hasVisible = true;
 				UV uv = project(h2, dec, scale);
-				res.add(uv);
+            // System.err.println("makeUVPoints u, v:" + uv.u + " " + uv.v);
+ 				res.add(uv);
 		  }
+        /* if (!hasVisible) {
+            System.err.println("Baseline.makeUVPoints: baseline has no visible points!");
+        } else {
+            System.err.println("Baseline.makeUVPoints: baseline has visible points!");
+        }
+        System.err.println("makeUVPoints: " + res.get(res.size()-1).u); */
 		  return res;
 	 }
 
 
 	 GeneralPath makeUVGeneralPath(double h1, double h2, 
-										double dec, double scale) {
-		  
+                                  double dec, double scale) {
 		  GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 		  boolean first = true;
 		  for (double h = h1; h <= h2+0.06; h += 0.06) {

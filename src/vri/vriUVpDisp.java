@@ -10,6 +10,7 @@ package nl.jive.vri;
 
 import java.applet.Applet;
 import java.beans.*;
+import java.awt.*;
 
 class vriUVpDisp extends vriGreyDisp 
     implements PropertyChangeListener
@@ -21,7 +22,6 @@ class vriUVpDisp extends vriGreyDisp
         super(app);
         setUnit("lambda");
         message = new String("No current transform");
-        // hasAxes = true;
         setHasAxes(true);
         axesLabels = new String[] {"U", "V"};
         propChanges = new PropertyChangeSupport(this);
@@ -36,16 +36,18 @@ class vriUVpDisp extends vriGreyDisp
         // uvcov and fft are for UVpConvDisp
         // dat is from the source image, for UVpDisp
         String pname = e.getPropertyName();
-        if (pname=="uvcov") {
+        if (pname.equals("uvcov")) {
             System.err.println("vriUVpDisp: "+
                                "UV coverage changed - updating convolution");
             uvcov =  (SquareArray) e.getNewValue(); 
             if (fft!=null) {
+                System.err.println("vriUVpDisp: "+
+                                   "fft size " + fft.size);
                 applyUVc(uvcov, fft);
             } else {
                 System.err.println("vriUVpDisp: Null fft");
             }
-        } else if (pname=="fft") {
+        } else if (pname.equals("fft")) {
             System.err.println("vriUVp(Conv)Disp: UVp fft changed");
             fft = (FFTArray) e.getNewValue();
             if (uvcov!=null) {
@@ -53,7 +55,7 @@ class vriUVpDisp extends vriGreyDisp
             } else {
                 System.err.println("vriUVpDisp: Null uvcov");
             }
-        } else if (pname=="dat") {
+        } else if (pname.equals("dat")) {
             System.err.println("vriUVpDisp: img disp dat changed");
             SquareArray dat = (SquareArray) e.getNewValue();
             if (dat != null) {
@@ -62,9 +64,9 @@ class vriUVpDisp extends vriGreyDisp
                 System.err.println("vriUVpDisp: got null dat!");
             }
         } else {
+            Boolean b = pname.equals("dat");
             System.err.println("vriUVpDisp got propertyChange for "+
-                               e.getPropertyName()+
-                               " ; ignoring it.");
+                               pname+" ; ignoring it because "+b.toString());
         }
     }
 
@@ -75,7 +77,7 @@ class vriUVpDisp extends vriGreyDisp
         }
         System.err.println("vriUVpDisp: Fourier transforming...");
         message = new String("Fourier transforming...");
-        repaint();
+        super.repaint();
         FFTArray fdat = FFTArray.fromSquareArray(dat);
         fft = fdat.fft();
         fftToImg(fft);
@@ -84,9 +86,11 @@ class vriUVpDisp extends vriGreyDisp
 
     public void fftToImg(FFTArray fft) {
         PixArray pix = vriUtils.fftToPix(fft, type);
-        pix.toImage(applet, fft.size);
+        System.err.println("vriUVpDisp: pix " + pix.toString());
+        img = pix.toImage(applet, fft.size);
         message = null;
         repaint();
+        System.err.println("vriUVpDisp: Repainted...");
     }
 
     // sets fft if this is the convolved class
@@ -99,4 +103,10 @@ class vriUVpDisp extends vriGreyDisp
         fftToImg(fftconv);
         propChanges.firePropertyChange("fftconv", null, fftconv);
     }
+
+    public void paint(Graphics g) {
+        System.err.println("vriUVpDisp: Painting...");
+        super.paint(g);
+    }
+        
 }
