@@ -12,7 +12,6 @@ import java.lang.Math;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
-import java.applet.Applet;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.net.*;
@@ -40,7 +39,6 @@ public class vrijr extends vri
 		  f.setVisible(true);
 	 }
 
-
 	 void makeImagePane() {
 		  allImgPanel = new JPanel();
 		  GridBagLayout gbl = new GridBagLayout();
@@ -50,7 +48,7 @@ public class vrijr extends vri
 		  gbc.gridx = 0;
 		  gbc.gridy = 0;
 		  gbc.gridwidth = 3;
-		  allImgPanel.add(new JLabel("Array"));
+		  allImgPanel.add(new JLabel("Array"), gbc);
 		  
 		  arrDisp = new ArrayDisplays.vriFlatLatLonArrDisp(obs);
 		  // FIXME:

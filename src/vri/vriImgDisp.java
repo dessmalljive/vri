@@ -9,16 +9,16 @@
 
 package nl.jive.vri;
 
-import java.applet.Applet;
 import java.beans.*;
 import java.awt.*;
+import javax.swing.*;
 
 class vriImgDisp extends vriGreyDisp 
     implements PropertyChangeListener 
 {
     SquareArray dat;
 
-    public vriImgDisp(Applet app) {
+    public vriImgDisp(JApplet app) {
         super(app);
         setUnit("as");
         propChanges = new PropertyChangeSupport(this);

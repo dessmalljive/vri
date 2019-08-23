@@ -34,7 +34,6 @@ import java.lang.Math;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
-import java.applet.Applet;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.net.*;

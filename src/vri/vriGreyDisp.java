@@ -10,7 +10,6 @@
 
 package nl.jive.vri;
 
-import java.applet.Applet;
 import java.lang.Math;
 import java.awt.*;
 import java.awt.image.*;
@@ -30,7 +29,7 @@ class vriGreyDisp extends vriDisplay {
     public static class EmptyImageException extends Exception {};
 
 
-    Applet applet;
+    JApplet applet;
     //  boolean replot = false;
     URL imgURL;
     Image img;
@@ -42,7 +41,7 @@ class vriGreyDisp extends vriDisplay {
     boolean hasAxes = false;
     String[] axesLabels = new String[] {"x", "y"};
 
-    public vriGreyDisp(Applet app) {
+    public vriGreyDisp(JApplet app) {
         super();
         applet = app;
     }

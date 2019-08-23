@@ -56,7 +56,7 @@ class vriUVcDisp extends vriDisplay
 		  propChanges = new PropertyChangeSupport(this);
 	 }
 
-	 public <T extends isVisible> void setObservatory(vriObservatory<? extends isVisible> aobs) {
+	 public void setObservatory(vriObservatory<? extends isVisible> aobs) {
 		  System.err.println("vriUVcDisp: setting observatory");
 		  obs = aobs;
 		  double lengthScale = obs.getLengthScale(); // in m
@@ -114,7 +114,7 @@ class vriUVcDisp extends vriDisplay
 		  return uvcov;
 	 }
 
-	 public <T extends isVisible> void uvCoverage() {
+	 public void uvCoverage() {
 		  
 		  Rectangle r = getBounds();
 		  uvcov = new SquareArray(uvCoverageSize);
@@ -127,13 +127,8 @@ class vriUVcDisp extends vriDisplay
 		  System.err.println("vriUVcDisp: arrayScale: " + arrayScale);
 		  System.err.println("vriUVcDisp: s: "+s);
         System.err.println("vriUVcDisp: aux.dec: "+aux.dec);
-        vriObservatory<T> o = (vriObservatory<T>) obs;
-		  ArrayList<Baseline<T>> baselines = o.getBaselines();
 		  System.err.println("vriUVcDisp: Obs.antennas length: "+ obs.numberOfAntennas());
-		  System.err.println("vriUVcDisp: Obs.baselines length: "+ baselines.size());	
-        for (Baseline<T> bl : baselines) {
-				applyUV(bl, aux.ha1, aux.ha2, aux.dec, s);
-		  } 
+        applyUV(aux.ha1, aux.ha2, aux.dec, s);
 		  boolean nonzero = false;
 		  for (int i=0; i < uvCoverageSize*uvCoverageSize; i++) {
 				if (uvcov.data[i] != 0) {
@@ -149,25 +144,26 @@ class vriUVcDisp extends vriDisplay
         }
 	 }  // uvCoverage()
 
-	 public void applyUV(Baseline<? extends isVisible> bl,
-								double h1, double h2,
+	 public void applyUV(double h1, double h2,
 								double dec, double s) {
         
 		  double uvscale = 1;
         double umax = 0;
         double vmax = 0;
-		  ArrayList<UV> uvTrack = bl.makeUVPoints(h1, h2, dec, s);
+		  java.util.List<ArrayList<UV> > uvTracks = obs.makeUVTracks(h1, h2, dec, s);
 		  int size = uvcov.size;
-		  for (UV uv : uvTrack) {
-            if (Math.abs(uv.u)>umax) umax = Math.abs(uv.u);
-            if (Math.abs(uv.v)>vmax) vmax = Math.abs(uv.v);
- 				int uc = (int)(uv.u*uvscale);
- 				int vc = (int)(uv.v*uvscale);
-				if (uc > -size/2 && uc < size/2 && 
-					 vc > -size/2 && vc < size/2) {
-					 uvcov.set(uc+size/2, vc+size/2, 1);
-					 uvcov.set(-uc+size/2, -vc+size/2, 1);
-				}
+		  for (ArrayList<UV> uvt : uvTracks) {
+            for (UV uv : uvt) {
+                if (Math.abs(uv.u)>umax) umax = Math.abs(uv.u);
+                if (Math.abs(uv.v)>vmax) vmax = Math.abs(uv.v);
+                int uc = (int)(uv.u*uvscale);
+                int vc = (int)(uv.v*uvscale);
+                if (uc > -size/2 && uc < size/2 && 
+                    vc > -size/2 && vc < size/2) {
+                    uvcov.set(uc+size/2, vc+size/2, 1);
+                    uvcov.set(-uc+size/2, -vc+size/2, 1);
+                }
+            }
 		  }
 	 }  
 	  
@@ -215,7 +211,6 @@ class vriUVcDisp extends vriDisplay
 
 	 public void paint(Graphics g) {
 		  Graphics2D g2 = (Graphics2D) g;
-		  // g2.setTransform(aff);
 		  Rectangle r = getBounds();
 		  int tx, ty;
 		  int tw, th;  // Used for the shadow plot
@@ -244,38 +239,25 @@ class vriUVcDisp extends vriDisplay
 		  // System.err.println(String.format("UVc.Aux parameters: ha1 %f ha2 %f dec %f",  
 		  // aux.ha1, aux.ha2, aux.dec));
 
-        plotAllBaselines(s, g2);
+        plotBaselineTracks(s, g2);
 		  g2.translate(-getWidth()/2.0, -getHeight()/2.0);
 		  paintScale(g);
 		  plotFocus(g);
 	 }  
 
-    <T extends isVisible> void plotAllBaselines(double s, Graphics2D g) {
-        vriObservatory<T> o = (vriObservatory<T>) obs;
-		  ArrayList<Baseline<T>> baselines = o.getBaselines();
-		  for  (Baseline<T> bl : baselines) {
-				plotBaseline(bl, aux.ha1, aux.ha2, aux.dec, s, g);
-		  } 
+    void plotBaselineTracks(double s, Graphics2D g2) {
+        java.util.List<GeneralPath> activePaths = obs.getActivePaths(selectedAntenna, aux.ha1, aux.ha2, aux.dec, s);
+        g2.setColor(Color.red);
+        for (GeneralPath p: activePaths) {
+            g2.draw(p);
+        }
+        java.util.List<GeneralPath> otherPaths = obs.getOtherPaths(selectedAntenna, aux.ha1, aux.ha2, aux.dec, s);
+        g2.setColor(Color.blue);
+        for (GeneralPath p: otherPaths) {
+            g2.draw(p);
+        }
+        g2.setColor(Color.red);
     }
-
-    <T extends isVisible> void plotBaseline(Baseline<T> bl,
-                                            double h1, double h2, double dec, 
-                                            double s, Graphics2D g2) {
-		  GeneralPath uvTrack = bl.makeUVGeneralPath(h1, h2, dec, s);
-		  if (isSelected(bl)) {
-				g2.setColor(Color.blue);
-		  } else {
-				g2.setColor(Color.red);
-		  }
-		  g2.draw(uvTrack);
-		  g2.setColor(Color.red);
-	 }  
-
-    <T extends isVisible> boolean isSelected(Baseline<T> bl) {
-        vriObservatory<T> o = (vriObservatory<T>) obs;
-		  return o.isAntennaInBaseline(selectedAntenna, bl);
-	 }
-
-
+    
 }
 

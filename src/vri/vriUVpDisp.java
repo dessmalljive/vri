@@ -8,9 +8,9 @@
  */
 package nl.jive.vri;
 
-import java.applet.Applet;
 import java.beans.*;
 import java.awt.*;
+import javax.swing.*;
 
 class vriUVpDisp extends vriGreyDisp 
     implements PropertyChangeListener
@@ -18,7 +18,7 @@ class vriUVpDisp extends vriGreyDisp
     FFTArray fft;
     SquareArray uvcov;	 
 
-    public vriUVpDisp(Applet app) {
+    public vriUVpDisp(JApplet app) {
         super(app);
         setUnit("lambda");
         message = new String("No current transform");

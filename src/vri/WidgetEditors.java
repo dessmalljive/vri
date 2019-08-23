@@ -265,7 +265,7 @@ public class WidgetEditors {
         }
 
         public vriObsEdit(vri p) {
-            this(p, new String[] {"MERLIN", "EVN", "IYA"});
+            this(p, new String[] {"MERLIN", "WSRT", "EVN", "ATCA", "IYA"});
         }
 
         void setObservatory(String s) {

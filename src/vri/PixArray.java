@@ -1,6 +1,6 @@
 package nl.jive.vri;
 
-import java.applet.Applet;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
 
@@ -22,7 +22,7 @@ class PixArray {
         return data[j*width+i];
     }
 
-    public Image toImage(Applet applet, int size) {
+    public Image toImage(JApplet applet, int size) {
         return applet.createImage(new MemoryImageSource(width, height, data, 0, size));
     }
 
