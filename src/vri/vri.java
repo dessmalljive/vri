@@ -129,28 +129,36 @@ public class vri extends JApplet
 		  GridBagConstraints gbc = new GridBagConstraints();
 		  allImgPanel.setLayout(gbl);
 
-        //gbc.gridwidth = 5;
 
 		  // First Column
-		  gbc.gridx = 0; gbc.gridy = 0;
+		  gbc.gridx = 0;
+        gbc.gridy = 0;
 		  allImgPanel.add(new JLabel("Source Image"), gbc);
 
 		  imgDisp = new vriImgDisp(this);
-		  gbc.gridx = 0; gbc.gridy = 1;
+		  gbc.gridx = 0;
+        gbc.gridy = 1;
 		  allImgPanel.add(imgDisp, gbc);
 		  // allImgPanel.add(new JLabel("<imgDisp>"), gbc);
-		  
-		  gbc.gridx = 0; gbc.gridy = 3;
+
+        gbc.gridx = 0;
+		  gbc.gridy = 2;
+        imgDisp2 = new vriImgDisp(this);
+        allImgPanel.add(new JLabel("[Empty grid pos (0, 2)]"), gbc);
+
+		  gbc.gridx = 0;
+        gbc.gridy = 3;
 		  allImgPanel.add(new JLabel("UV source"), gbc);
 
-		  gbc.gridx = 0; gbc.gridy = 4;
+		  gbc.gridx = 0;
+        gbc.gridy = 4;
         UVpDisp = new vriUVpDisp(this);
         allImgPanel.add(UVpDisp, gbc);
 		  // allImgPanel.add(new JLabel("<UVpDisp>"), gbc);
 
-
 		  // Second column
-		  gbc.gridx = 1; gbc.gridy = 0;
+		  gbc.gridx = 1;
+        gbc.gridy = 0;
 		  allImgPanel.add(new JLabel("Array"), gbc);
 		  
 		  arrDisp = obs.getArrDisp();
@@ -160,24 +168,28 @@ public class vri extends JApplet
 		  } else {
 				arrDisp.setGeometry(g);
 		  }
+        gbc.gridx = 1;
         gbc.gridy = 1;
-        // allImgPanel.add(arrDisp, gbc);
-        allImgPanel.add(new JLabel("<arrDisp>"), gbc);
+        allImgPanel.add(arrDisp, gbc);
+        // allImgPanel.add(new JLabel("<arrDisp>"), gbc);
 
 		  arrCtrl = obs.getDispCtrl(arrDisp);
+        gbc.gridx = 1;
 		  gbc.gridy = 2;
 		  allImgPanel.add(arrCtrl, gbc);
         // allImgPanel.add(new JLabel("<arrCtrl>"), gbc);
 
+        gbc.gridx = 1;
 		  gbc.gridy = 3;
         allImgPanel.add(new JLabel("Array UV Coverage"), gbc);
 
 		  UVcDisp = new vriUVcDisp(obs, aux);
+        gbc.gridx = 1;
 		  gbc.gridy = 4;
         allImgPanel.add(UVcDisp, gbc);
         // allImgPanel.add(new JLabel("<UVcDisp>"), gbc);
 
-
+        gbc.gridx = 1;
 		  gbc.gridy = 5;
         UVcCtrl=new vriUVcZoomChooser("?", UVcDisp);
         allImgPanel.add(UVcCtrl, gbc);
@@ -188,14 +200,22 @@ public class vri extends JApplet
 		  gbc.gridy = 0;
 		  allImgPanel.add(new JLabel("Reconstructed Image"), gbc); 
 
+        gbc.gridx = 2;
 		  gbc.gridy = 1;
         imgDisp2 = new vriImgDisp(this);
         allImgPanel.add(imgDisp2, gbc);
         // allImgPanel.add(new JLabel("<imgDisp2>"), gbc);
-		  
+
+        gbc.gridx = 2;
+		  gbc.gridy = 2;
+        allImgPanel.add(new JLabel("[Empty grid pos (2, 2)]"), gbc);
+
+        
+        gbc.gridx = 2;
 		  gbc.gridy = 3;
 		  allImgPanel.add(new JLabel("UV Detection"), gbc);
         
+        gbc.gridx = 2;
         gbc.gridy = 4;
         UVpConvDisp=new vriUVpDisp(this);
 		  allImgPanel.add(UVpConvDisp, gbc);

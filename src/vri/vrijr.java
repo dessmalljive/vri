@@ -51,11 +51,24 @@ public class vrijr extends vri
 		  allImgPanel.add(new JLabel("Array"), gbc);
 		  
 		  arrDisp = new ArrayDisplays.vriFlatLatLonArrDisp(obs);
-		  // FIXME:
-		  // ArrayList<Component>
 		  arrDisp.setGeometry(geom.geomap.get("IYA"));
-		  gbc.gridx = 0;
+        // FIXME: There must be a correct order to create these such that the reconstructed image comes out right.
+        // Original image:
+		  imgDisp = new vriImgDisp(this);
+        // UV plot of original image:
+		  UVpDisp = new vriUVpDisp(this);
+        // UV coverage:
+		  UVcDisp = new vriUVcDisp(obs, aux);
+		  UVcDisp.setPlotScale(Scale.EARTH);
+		  UVcCtrl= new vriUVcZoomChooser("?", UVcDisp);
+        // Multiplied:
+		  UVpConvDisp = new vriUVpDisp(this);
+        // Reconstructed image:
+        imgDisp2 = new vriImgDisp(this);
+
+        gbc.gridx = 0;
 		  gbc.gridy = 1;
+		  gbc.gridwidth = 3;
 		  allImgPanel.add(arrDisp, gbc);
 
 		  gbc.gridx = 0;
@@ -63,39 +76,30 @@ public class vrijr extends vri
 		  gbc.gridwidth = 1;
 		  allImgPanel.add(new JLabel("Source Image"), gbc);
 
-		  imgDisp = new vriImgDisp(this);
-		  gbc.gridx = 0;
-		  gbc.gridy = 3;
-		  allImgPanel.add(imgDisp, gbc);
-		  System.err.print("imgDisp created\n");
-		  
-		  UVpDisp = new vriUVpDisp(this);
-
-		  gbc.gridx = 1;
+        gbc.gridx = 1;
 		  gbc.gridy = 2;
 		  allImgPanel.add(new JLabel("Array UV Coverage"), gbc);
 
-		  UVcDisp = new vriUVcDisp(obs, aux);
-		  UVcDisp.setPlotScale(Scale.EARTH);
+		  gbc.gridx = 2;
+		  gbc.gridy = 2;
+		  allImgPanel.add(new JLabel("Reconstructed Image"), gbc); 
+
+        
+        // Third row
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+		  gbc.gridy = 3;
+		  allImgPanel.add(imgDisp, gbc);
+
 		  gbc.gridx = 1;
 		  gbc.gridy = 3;
 		  allImgPanel.add(UVcDisp, gbc);
 		  
 		  
-		  UVcCtrl=new vriUVcZoomChooser("?", UVcDisp);
-
-		  // Third column
-		  gbc.gridx = 2;
-		  gbc.gridy = 2;
-		  allImgPanel.add(new JLabel("Reconstructed Image"), gbc); 
-
 		  gbc.gridx = 2;
 		  gbc.gridy = 3;
-		  allImgPanel.add(imgDisp2 = new vriImgDisp(this), gbc);
+		  allImgPanel.add(imgDisp2, gbc);
 
-		  UVpConvDisp = new vriUVpDisp(this);
-
-		  // End of gridbagging
 
 		  add(allImgPanel);
 
@@ -110,12 +114,12 @@ public class vrijr extends vri
 	 }
 
  	 void makeListeners() {
+		  UVpConvDisp.addPropertyChangeListener(imgDisp2); // -> fftconv
+		  UVpDisp.addPropertyChangeListener(UVpConvDisp); // -> FFT
+		  UVcDisp.addPropertyChangeListener(UVpConvDisp); // -> uvcov
 		  imgDisp.addPropertyChangeListener(UVpDisp); // -> dat
 		  imgDisp.addPropertyChangeListener(UVcDisp); // -> fftsize
 		  arrDisp.addPropertyChangeListener(UVcDisp); // -> active antenna
-		  UVpDisp.addPropertyChangeListener(UVpConvDisp); // -> FFT
-		  UVcDisp.addPropertyChangeListener(UVpConvDisp); // -> uvcov
-		  UVpConvDisp.addPropertyChangeListener(imgDisp2); // -> fftconv
 	 }
 
 	 public void init() {
@@ -123,7 +127,7 @@ public class vrijr extends vri
 		  setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		  setBackground(Color.lightGray);
 		  obsman = new vriObservatoryManager();
-		  obs = obsman.select("EVN");
+		  obs = obsman.select("IYA");
 		  aux = new vriAuxiliary();
 
 		  obsEdit = new WidgetEditors.vriObsEdit(this, new String[] {"IYA", "EVN"}); 
@@ -138,18 +142,17 @@ public class vrijr extends vri
 		  makeControls();
 		  makeImagePane();
 		  makeListeners();
-
-		  arrDisp.setObservatory(obs);
-		  // new
-		  auxEdit.setObservatory(obs);
-
 		  if (imgDisp==null) {
 				System.err.println("imgDisp doesn't really exist");
 		  } else {
 				System.err.println("imgDisp really isn't null!");
 		  }
+        
 		  imgEdit.setImage("Medium double");
-		  setVisible(true);
+		  arrDisp.setObservatory(obs);
+		  auxEdit.setObservatory(obs);
+
+        setVisible(true);
 	 }
 
 	 void setArrDisp(vriObservatory<?> o) {

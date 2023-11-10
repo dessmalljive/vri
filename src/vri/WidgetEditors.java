@@ -254,7 +254,7 @@ public class WidgetEditors {
             setLayout(new FlowLayout(FlowLayout.LEFT));
 
             add(site_choice = new JComboBox<String>(site_choice_data));
-            site_choice.setSelectedItem("EVN");
+            site_choice.setSelectedItem("MERLIN");
 
             site_choice.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {

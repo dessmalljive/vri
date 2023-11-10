@@ -127,6 +127,7 @@ public class vriSource extends vri
 		  setVisible(true);
 	 }
 
+    
 	 void setArrDisp(vriObservatory<?> o) {
 		  try {
             System.err.println("Vrijr: Changing observatory");
